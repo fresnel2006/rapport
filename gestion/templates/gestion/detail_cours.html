@@ -1,0 +1,130 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Détails du Cours - ESATIC{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1><i class="fas fa-book-open me-2"></i>{{ cours.titre }}</h1>
+                <p class="text-muted mb-0">{{ cours.description }}</p>
+            </div>
+            <a href="{% url 'liste_cours' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour aux Cours
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h3 class="card-title">{{ cours.etudiants.count }}</h3>
+                <p class="card-text">Étudiants Inscrits</p>
+                <a href="{% url 'ajouter_etudiants_cours' cours.id %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus me-1"></i>Ajouter Étudiants
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-calendar-alt fa-3x text-success mb-3"></i>
+                <h3 class="card-title">{{ seances|length }}</h3>
+                <p class="card-text">Séances Programmées</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-file-alt fa-3x text-info mb-3"></i>
+                <h3 class="card-title">{{ cahiers|length }}</h3>
+                <p class="card-text">Notes dans le Cahier</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-calendar-check me-2"></i>Séances</h5>
+                <a href="{% url 'creer_seance' cours.id %}" class="btn btn-light btn-sm">
+                    <i class="fas fa-plus me-1"></i>Nouvelle Séance
+                </a>
+            </div>
+            <div class="card-body">
+                {% if seances %}
+                    <div class="list-group">
+                        {% for seance in seances %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ seance.date|date:"d/m/Y H:i" }}</strong><br>
+                                    <small class="text-muted">{{ seance.description }}</small>
+                                </div>
+                                <a href="{% url 'faire_appel' seance.id %}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check-circle me-1"></i>Faire l'Appel
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Aucune séance programmée pour ce cours.</p>
+                        <a href="{% url 'creer_seance' cours.id %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Créer la Première Séance
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-book me-2"></i>Cahier de Textes</h5>
+                <a href="{% url 'ajouter_cahier' cours.id %}" class="btn btn-light btn-sm">
+                    <i class="fas fa-plus me-1"></i>Ajouter une Note
+                </a>
+            </div>
+            <div class="card-body">
+                {% if cahiers %}
+                    <div class="accordion" id="cahierAccordion">
+                        {% for cahier in cahiers %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading{{ cahier.id }}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ cahier.id }}" aria-expanded="false" aria-controls="collapse{{ cahier.id }}">
+                                        <i class="fas fa-file-alt me-2"></i>{{ cahier.titre }}
+                                        <small class="ms-auto text-muted">{{ cahier.date_creation|date:"d/m/Y" }}</small>
+                                    </button>
+                                </h2>
+                                <div id="collapse{{ cahier.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ cahier.id }}" data-bs-parent="#cahierAccordion">
+                                    <div class="accordion-body">
+                                        {{ cahier.contenu|linebreaks }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Le cahier de textes est vide.</p>
+                        <a href="{% url 'ajouter_cahier' cours.id %}" class="btn btn-info">
+                            <i class="fas fa-plus me-2"></i>Ajouter la Première Note
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Créer un Cours - ESATIC{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h1 class="h4 mb-0"><i class="fas fa-plus me-2"></i>Créer un Nouveau Cours</h1>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.titre.id_for_label }}" class="form-label">
+                            <i class="fas fa-book me-1"></i>{{ form.titre.label }}
+                        </label>
+                        {{ form.titre }}
+                        {% if form.titre.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.titre.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            <i class="fas fa-align-left me-1"></i>{{ form.description.label }}
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.description.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.etudiants.id_for_label }}" class="form-label">
+                            <i class="fas fa-users me-1"></i>{{ form.etudiants.label }}
+                        </label>
+                        {{ form.etudiants }}
+                        {% if form.etudiants.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.etudiants.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">Sélectionnez les étudiants qui seront inscrits à ce cours.</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Créer le Cours
+                        </button>
+                        <a href="{% url 'liste_cours' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

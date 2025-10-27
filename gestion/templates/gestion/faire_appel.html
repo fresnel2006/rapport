@@ -1,0 +1,126 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Faire l'Appel - ESATIC{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButtons = document.querySelectorAll('.toggle-presence');
+
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const etudiantId = this.getAttribute('data-etudiant-id');
+            const currentStatus = this.getAttribute('data-current-status');
+            const hiddenInput = document.getElementById('hidden_present_' + etudiantId);
+            const badge = this.querySelector('.badge');
+
+            if (currentStatus === 'present') {
+                // Change to absent
+                this.setAttribute('data-current-status', 'absent');
+                hiddenInput.value = 'off';
+                badge.className = 'badge bg-secondary';
+                badge.textContent = 'Absent';
+            } else {
+                // Change to present
+                this.setAttribute('data-current-status', 'present');
+                hiddenInput.value = 'on';
+                badge.className = 'badge bg-success';
+                badge.textContent = 'Présent';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1><i class="fas fa-clipboard-check me-2"></i>Faire l'Appel</h1>
+                <p class="text-muted mb-0">
+                    <i class="fas fa-calendar me-1"></i>{{ seance.date|date:"l d F Y à H:i" }}<br>
+                    <i class="fas fa-book me-1"></i>Cours: <strong>{{ seance.cours.titre }}</strong>
+                </p>
+            </div>
+            <a href="{% url 'detail_cours' seance.cours.id %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Retour au Cours
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><i class="fas fa-users me-2"></i>Liste des Étudiants</h5>
+        <small class="text-muted">Cochez les étudiants présents à cette séance</small>
+    </div>
+    <div class="card-body">
+        {% if etudiant_list %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="fas fa-id-card me-1"></i>Matricule</th>
+                                <th><i class="fas fa-user me-1"></i>Nom</th>
+                                <th><i class="fas fa-user me-1"></i>Prénom</th>
+                                <th class="text-center"><i class="fas fa-check-circle me-1"></i>Présent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in etudiant_list %}
+                                <tr>
+                                    <td><strong>{{ item.etudiant.matricule }}</strong></td>
+                                    <td>{{ item.etudiant.nom }}</td>
+                                    <td>{{ item.etudiant.prenom }}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm toggle-presence"
+                                                data-etudiant-id="{{ item.etudiant.id }}"
+                                                data-current-status="{% if item.is_present %}present{% else %}absent{% endif %}">
+                                            {% if item.is_present %}
+                                                <span class="badge bg-success">Présent</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Absent</span>
+                                            {% endif %}
+                                        </button>
+                                        <input type="hidden" name="present_{{ item.etudiant.id }}" value="{% if item.is_present %}on{% else %}off{% endif %}" id="hidden_present_{{ item.etudiant.id }}">
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div class="text-muted">
+                        <small>
+                            <i class="fas fa-info-circle me-1"></i>
+                            {{ etudiant_list|length }} étudiant(s) inscrit(s) à ce cours
+                        </small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-save me-2"></i>Enregistrer l'Appel
+                        </button>
+                        <a href="{% url 'detail_cours' seance.cours.id %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Annuler
+                        </a>
+                    </div>
+                </div>
+            </form>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-users fa-4x text-muted mb-3"></i>
+                <h3 class="text-muted">Aucun étudiant inscrit</h3>
+                <p class="text-muted">Il n'y a aucun étudiant inscrit à ce cours pour le moment.</p>
+                <a href="{% url 'detail_cours' seance.cours.id %}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour au Cours
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Connexion - ESATIC{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center min-vh-50">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white text-center">
+                <i class="fas fa-sign-in-alt fa-2x mb-2"></i>
+                <h4 class="card-title mb-0">Connexion</h4>
+                <p class="mb-0 small">Système de Gestion du Cahier Digital</p>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">
+                            <i class="fas fa-user me-1"></i>Nom d'utilisateur
+                        </label>
+                        <input type="text" name="username" id="id_username"
+                               class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                               placeholder="Entrez votre nom d'utilisateur" required>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>Mot de passe
+                        </label>
+                        <input type="password" name="password" id="id_password"
+                               class="form-control {% if form.password.errors %}is-invalid{% endif %}"
+                               placeholder="Entrez votre mot de passe" required>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center text-muted">
+                <small>
+                    <i class="fas fa-university me-1"></i>
+                    École Supérieure Africaine des TIC - 2025
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

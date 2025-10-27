@@ -1,0 +1,56 @@
+{% extends 'gestion/base.html' %}
+
+{% block title %}Créer une Séance - ESATIC{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h1 class="h4 mb-0"><i class="fas fa-calendar-plus me-2"></i>Créer une Séance</h1>
+                <p class="mb-0 small">Cours: <strong>{{ cours.titre }}</strong></p>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.date.id_for_label }}" class="form-label">
+                            <i class="fas fa-calendar me-1"></i>{{ form.date.label }}
+                        </label>
+                        {{ form.date }}
+                        {% if form.date.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.date.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">Sélectionnez la date et l'heure de la séance.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            <i class="fas fa-align-left me-1"></i>{{ form.description.label }}
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.description.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">Décrivez brièvement le contenu de la séance.</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i>Créer la Séance
+                        </button>
+                        <a href="{% url 'detail_cours' cours.id %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
